@@ -62,7 +62,7 @@ app.get('/home',
     res.render('home', { user: req.user });
   });
 
-app.get('login', 
+app.get('/login', 
   function(req, res) {
     res.render('login');
   });
