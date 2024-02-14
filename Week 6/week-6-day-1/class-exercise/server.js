@@ -21,7 +21,16 @@ passport.use(new Strategy(
 
 // Configure Passport authenticated session persistence.
 // Serialize and deserialize users
+passport.serializeUser(function(user, cb) {
+  cb(null, user.id);
+});
 
+passport.deserializeUser(function(id, cb) {
+  db.users.findById(id, function(err, user) {
+    if (err) { return cb(err); }
+    cb(null, user);
+  });
+});
 
 
 // Create a new Express application.
