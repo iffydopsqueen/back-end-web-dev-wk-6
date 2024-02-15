@@ -84,8 +84,12 @@ app.post('/login',
 
 app.get('/logout', 
   function(req, res) {
-    req.logout();
-    res.redirect('/');
+    req.logout();  // clear the login session
+    // Destroy the session and clear the session cookie 
+    req.session.destroy(function(err) { // destroys/unsets the session
+      res.clearCookie('connect.sid');   // clears the session cookie - This ensures that the session cookie is removed when the user logs out manually
+      res.redirect('/');
+    });
   });
 
 app.listen(3000);
