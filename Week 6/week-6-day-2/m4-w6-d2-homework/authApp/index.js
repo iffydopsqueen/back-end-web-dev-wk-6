@@ -94,15 +94,17 @@ app.get('/user',
 );
 
 app.get('/logout', (req, res) => {
-    req.logout(function(err) {
+    // Clear the session cookie
+    req.session.destroy(err => {
         if (err) {
             console.error('Error during logout:', err);
             return next(err);
         }
+        // Clear the cookie from the client's browser
+        res.clearCookie('connect.sid');
         res.sendFile('html/logout.html', {root: __dirname});
     });
 });
-
 
 /* REGISTER SOME USERS */
 // UserDetails.register({username: 'paul', active: false}, 'paul');
