@@ -90,11 +90,21 @@ app.get('/user',
     (req, res) => res.send({user: req.user})
 );
 
-app.get('/logout', (req, res) => {
-    req.logout();
-    res.sendFile('html/logout.html', {root: __dirname})
-});
+// app.get('/logout', (req, res) => {
+//     req.logout();
+//     res.sendFile('html/logout.html', {root: __dirname})
+// });
 
+// Now, the user can log out
+app.get('/logout', (req, res) => {
+    req.logout(function(err) {
+        if (err) {
+            console.error('Error during logout:', err);
+            return next(err);
+        }
+        res.sendFile('html/logout.html', {root: __dirname});
+    });
+});
 
 /* REGISTER SOME USERS */
 // UserDetails.register({username: 'paul', active: false}, 'paul');
