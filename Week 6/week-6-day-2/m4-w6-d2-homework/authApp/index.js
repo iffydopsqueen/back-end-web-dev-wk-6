@@ -5,10 +5,14 @@ const app = express();
 app.use(express.static(__dirname));
 
 const bodyParser = require('body-parser');
-const expressSession = require('express-session') ({
+const expressSession = require('express-session')({
     secret: 'secret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        secure: false,
+        maxAge: 60000 // 60 seconds 
+      }
 });
 
 app.use(bodyParser.json());
@@ -28,8 +32,7 @@ app.use(passport.session());
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 
-mongoose.connect('mongodb://localhost/MyDatabase', 
-    { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost/MyDatabase', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const Schema = mongoose.Schema;
 const UserDetail = new Schema({
@@ -91,8 +94,13 @@ app.get('/user',
 );
 
 app.get('/logout', (req, res) => {
-    req.logout();
-    res.sendFile('html/logout.html', {root: __dirname})
+    req.logout(function(err) {
+        if (err) {
+            console.error('Error during logout:', err);
+            return next(err);
+        }
+        res.sendFile('html/logout.html', {root: __dirname});
+    });
 });
 
 
