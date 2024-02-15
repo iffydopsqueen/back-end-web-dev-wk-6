@@ -3,9 +3,8 @@ var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 var db = require('./db');
 
-
 // Configure the local strategy for use by Passport.
-//
+
 // The local strategy requires a `verify` function which receives the credentials
 // (`username` and `password`) submitted by the user.
 passport.use(new Strategy(
@@ -32,7 +31,6 @@ passport.deserializeUser(function(id, cb) {
   });
 });
 
-
 // Create a new Express application.
 var app = express();
 
@@ -44,7 +42,18 @@ app.set('view engine', 'ejs');
 // logging, parsing, and session handling.
 app.use(require('morgan')('combined'));
 app.use(require('body-parser').urlencoded({ extended: true }));
-app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+
+// Add the session middleware with the defined cookie settings
+var session = require('express-session');
+app.use(session({ 
+  secret: 'keyboard cat', 
+  resave: false, 
+  saveUninitialized: false,
+  cookie: {
+    secure: false,
+    maxAge: 60000 // 60 seconds 
+  } 
+}));
 
 // Initialize Passport and restore authentication state, if any, from the
 // session.
