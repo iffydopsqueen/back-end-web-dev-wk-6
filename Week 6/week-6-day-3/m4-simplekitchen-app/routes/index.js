@@ -42,10 +42,14 @@ router.post('/',
         check('name').isLength({ min: 1 }).withMessage('Please enter a name'),
         check('email').isLength({ min: 1 }).withMessage('Please enter an email'),
     ],
-    (req, res) => {
+    async (req, res) => {
         const errors = validationResult(req);
         if (errors.isEmpty()) {
           const registration = new Registration(req.body);
+          // generate salt hash password
+          const salt = await bcrypt.genSalt(10);
+          // set user password to hashed password
+          registration.password = await bcrypt.hash(registration.password, salt);
           registration.save()
             .then(() => {res.redirect('/thankyou');}) // Redirect to "/thankyou" after successful registration
             .catch((err) => {
