@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const auth = require('http-auth');
+const bcrypt = require('bcrypt'); // Added bcrypt for password hashing
 const { check, validationResult } = require('express-validator');
 
 const router = express.Router();
@@ -41,6 +42,8 @@ router.post('/',
     [
         check('name').isLength({ min: 1 }).withMessage('Please enter a name'),
         check('email').isLength({ min: 1 }).withMessage('Please enter an email'),
+        check('username').isLength({ min: 1 }).withMessage('Please enter a username'), // Validation for username
+        check('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'), // Validation for password
     ],
     async (req, res) => {
         const errors = validationResult(req);
