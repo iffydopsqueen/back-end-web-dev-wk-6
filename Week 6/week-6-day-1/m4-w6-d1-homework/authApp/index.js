@@ -97,11 +97,7 @@ app.get('/user',
 
 // Now, the user can log out
 app.get('/logout', (req, res) => {
-    req.logout(function(err) {
-        if (err) {
-            console.error('Error during logout:', err);
-            return next(err);
-        }
+    req.logout(() => {
         res.sendFile('html/logout.html', {root: __dirname});
     });
 });
