@@ -96,15 +96,27 @@ app.get('/user',
 app.get('/logout', (req, res) => {
     // Clear the session cookie
     req.session.destroy(err => {
-        if (err) {
-            console.error('Error during logout:', err);
-            return next(err);
-        }
         // Clear the cookie from the client's browser
         res.clearCookie('connect.sid');
         res.sendFile('html/logout.html', {root: __dirname});
     });
 });
+
+app.get('/logout', (req, res) => {
+    req.logout(() => {
+        res.sendFile('html/logout.html', {root: __dirname});
+    });
+});
+
+app.get('/logout', (req, res) => {
+    req.logout(() => {   // clear the login session
+        req.session.destroy(() => {    // destroys/unsets the session
+            res.clearCookie('connect.sid');   // clears the session cookie - This ensures that the session cookie is removed when the user logs out manually
+            res.sendFile('html/logout.html', {root: __dirname});
+        });
+    });
+});
+
 
 /* REGISTER SOME USERS */
 // UserDetails.register({username: 'paul', active: false}, 'paul');
